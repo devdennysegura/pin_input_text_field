@@ -181,6 +181,9 @@ class PinInputTextField extends StatefulWidget {
   /// The callback will execute when user click done.
   final ValueChanged<String> onSubmit;
 
+  /// The callback will execute when user typing.
+  final ValueChanged<String> onChanged;
+
   /// Decorate the pin.
   final PinDecoration decoration;
 
@@ -209,6 +212,7 @@ class PinInputTextField extends StatefulWidget {
   PinInputTextField({
     this.pinLength: 6,
     this.onSubmit,
+    this.onChanged,
     this.decoration: const BoxLooseDecoration(),
     List<TextInputFormatter> inputFormatter,
     this.keyboardType: TextInputType.phone,
@@ -270,6 +274,14 @@ class _PinInputTextFieldState extends State<PinInputTextField> {
         decoration: widget.decoration,
       ),
       child: TextField(
+        onChanged: (e) {
+          if (widget.onChanged != null) widget.onChanged(e);
+          if (e.length >= widget.pinLength) {
+            if (widget.onSubmit != null) widget.onSubmit(e);
+            FocusScope.of(context).requestFocus(FocusNode());
+          }
+        },
+
         /// Actual textEditingController.
         controller: widget.pinEditingController,
 
